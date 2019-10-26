@@ -21,20 +21,18 @@ const Card = mongoose.model('Card', {
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
-  Card.find({}).then(cards => {
-    console.log(1, cards)
-  })
-  res.send('Wedding wall!!!')
+app.get('/', async (req, res) => {
+  const cards = await Card.find({}).exec()
+  res.json(cards)
 })
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
   console.log(req.body)
   const newCard = new Card({
     image: req.body.image,
     text: req.body.text
   })
-  newCard.save()
+  await newCard.save()
   res.json({
     status: 'ok'
   })
