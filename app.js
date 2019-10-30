@@ -1,4 +1,5 @@
 const express = require('express')
+const exphbs = require('express-handlebars')
 const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
@@ -21,12 +22,14 @@ const Card = mongoose.model('Card', {
   profilePicURL: String
 })
 
+app.engine('handlebars', exphbs())
+app.set('view engine', 'handlebars')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.get('/', async (req, res) => {
   const cards = await Card.find({}).exec()
-  res.json(cards)
+  res.render('home', { cards })
 })
 
 app.post('/', async (req, res) => {
