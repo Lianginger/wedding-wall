@@ -1,4 +1,35 @@
-<h1>Wedding Wall</h1>
-<pre>
-  {{cards}}
-</pre>
+<div class="hero-image">
+  <div class="hero-text">
+    <h1>WE'RE GETTING MARRIED!</h1>
+    <p>敬泓 & 雨伶</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="head text-center m-5">
+    <h1>婚禮祝福牆</h1>
+    <a href="/slideshow">幻燈片放映</a>
+  </div>
+  <div class="card-columns">
+    {{#each cards}}
+    <div class="">
+      <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+        <img src="{{this.image}}" alt="{{this.name}}" style="width:100%">
+        <div class="card-text p-3">
+          <p>{{this.text}}</p>
+          <div class="info" style="text-align: right">
+            <div class="avatar"
+              style="display: inline-block; width: 2em;height: 2em;background-image: url({{this.profilePicURL}});background-position: center ;background-repeat: no-repeat ;background-size: cover; border-radius: 50%; margin-bottom: -0.5em;">
+            </div>
+            <p style="display: inline-block;">{{this.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<script type="text/javascript">
+
+</script>

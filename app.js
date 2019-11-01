@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 const port = process.env.PORT || 3000
 
 mongoose.set('debug', true)
-mongoose.connect('mongodb://localhost:27017/wedding-wall', { useNewUrlParser: true })
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/wedding-wall', { useNewUrlParser: true })
 const db = mongoose.connection
 
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -24,12 +24,22 @@ const Card = mongoose.model('Card', {
 
 app.engine('handlebars', exphbs())
 app.set('view engine', 'handlebars')
+app.use(express.static('public'))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 app.get('/', async (req, res) => {
-  const cards = await Card.find({}).exec()
+  const cards = await Card.find({})
+    .sort({ _id: -1 })
+    .exec()
   res.render('home', { cards })
+})
+
+app.get('/slideshow', async (req, res) => {
+  const cards = await Card.find({})
+    .sort({ _id: -1 })
+    .exec()
+  res.render('slideshow', { cards })
 })
 
 app.post('/', async (req, res) => {
