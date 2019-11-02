@@ -42,6 +42,10 @@ app.get('/slideshow', async (req, res) => {
   res.render('slideshow', { cards })
 })
 
+app.get('/cards/new', (req, res) => {
+  res.render('new')
+})
+
 app.post('/', async (req, res) => {
   console.log(req.body)
   const newCard = new Card({
