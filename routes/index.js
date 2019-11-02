@@ -1,4 +1,7 @@
 const Card = require('../models/card')
+const multer = require('multer')
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 module.exports = app => {
   app.get('/', async (req, res) => {
@@ -16,6 +19,12 @@ module.exports = app => {
   })
 
   app.get('/cards/new', (req, res) => {
+    res.render('new')
+  })
+
+  app.post('/cards/new', upload.single('image'), async (req, res) => {
+    console.log(req.file)
+    console.log(req.body)
     res.render('new')
   })
 
