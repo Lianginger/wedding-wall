@@ -5,6 +5,10 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const port = process.env.PORT || 3000
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config() // 使用 dotenv 讀取 .env 檔案
+}
+
 mongoose.set('debug', true)
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/wedding-wall', { useNewUrlParser: true })
 const db = mongoose.connection
