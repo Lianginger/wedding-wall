@@ -1,8 +1,7 @@
 const mongoose = require('mongoose')
 module.exports = mongoose.model('Card', {
   name: String,
-  image: String,
+  imageId: String,
   text: String,
-  userId: Number,
-  profilePicURL: String
+  profilePicId: String
 })

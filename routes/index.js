@@ -5,6 +5,9 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const cloudinary = require('cloudinary').v2
 const Datauri = require('datauri')
+const imagemin = require('imagemin')
+const imageminJpegtran = require('imagemin-jpegtran')
+const imageminPngquant = require('imagemin-pngquant')
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -20,6 +23,8 @@ module.exports = app => {
     res.render('home', { cards })
   })
 
+  app.get('/favicon.ico', (req, res) => res.status(204))
+
   app.get('/slideshow', async (req, res) => {
     const cards = await Card.find({})
       .sort({ _id: -1 })
@@ -33,18 +38,36 @@ module.exports = app => {
 
   app.post('/cards/new', upload.single('image'), async (req, res) => {
     const datauri = new Datauri()
-    await datauri.format(path.extname(req.file.originalname).toString(), req.file.buffer)
-    const file = datauri.content
-    const result = await cloudinary.uploader.upload(file).then(result => result)
+    console.time('imagemin')
+    const compressedImageBuffer = await imagemin.buffer(req.file.buffer, {
+      plugins: [
+        imageminJpegtran(),
+        imageminPngquant({
+          quality: [0.6, 0.8]
+        })
+      ]
+    })
+    console.timeEnd('imagemin')
 
+    console.time('datauri')
+    await datauri.format(path.extname(req.file.originalname).toString(), compressedImageBuffer)
+    console.timeEnd('datauri')
+    const file = datauri.content
+
+    console.time('cloudinary')
+    const result = await cloudinary.uploader.upload(file).then(result => result)
+    console.timeEnd('cloudinary')
+
+    console.time('MogodbSave')
     const newCard = new Card({
       name: req.body.name,
-      image: `https://res.cloudinary.com/gingerhouse/image/upload/q_auto/${result.public_id}`,
+      imageId: result.public_id,
       text: req.body.text,
-      userId: 996,
-      profilePicURL: `https://res.cloudinary.com/gingerhouse/image/upload/q_auto/${result.public_id}`
+      profilePicId: result.public_id
     })
     await newCard.save()
+    console.timeEnd('MogodbSave')
+
     res.redirect('/')
   })
 
@@ -52,10 +75,9 @@ module.exports = app => {
     console.log(req.body)
     const newCard = new Card({
       name: req.body.name,
-      image: req.body.image,
+      imageId: req.body.imageId,
       text: req.body.text,
-      userId: req.body.userId,
-      profilePicURL: req.body.profilePicURL
+      profilePicId: req.body.profilePicId
     })
     await newCard.save()
     res.json({
