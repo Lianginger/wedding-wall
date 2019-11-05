@@ -8,13 +8,13 @@
 <div class="container">
   <div class="head text-center m-5">
     <h1>婚禮祝福牆</h1>
-    <a href="/cards/new" class="btn btn-danger">上傳祝福</a>
-    <a href="/slideshow" class="btn btn-danger">自動播放</a>
+    <a href="/cards/new" class="btn btn-danger m-2">上傳祝福</a>
+    <a href="/slideshow" class="btn btn-danger m-2">自動播放</a>
   </div>
   <div class="card-columns">
     {{#each cards}}
     <div class="">
-      <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+      <div class="card" style="box-shadow: 0 4px 8px 0 rgba(200,35,51,0.2);">
         <img src="https://res.cloudinary.com/gingerhouse/image/upload/q_auto/w_360/{{this.imageId}}" alt="{{this.name}}"
           style="width:100%">
         <div class="card-text p-3">
@@ -31,7 +31,3 @@
     {{/each}}
   </div>
 </div>
-
-<script type="text/javascript">
-
-</script>
