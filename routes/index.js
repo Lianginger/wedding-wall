@@ -38,6 +38,7 @@ module.exports = app => {
 
   app.post('/cards/new', upload.single('image'), async (req, res) => {
     const datauri = new Datauri()
+    // 裁減大小
     console.time('imagemin')
     const compressedImageBuffer = await imagemin.buffer(req.file.buffer, {
       plugins: [
@@ -54,8 +55,12 @@ module.exports = app => {
     console.timeEnd('datauri')
     const file = datauri.content
 
+    // 上傳前檢查檔案大小 1m，太大就返回警告
     console.time('cloudinary')
-    const result = await cloudinary.uploader.upload(file).then(result => result)
+    const result = await cloudinary.uploader.upload(file, function(error, result) {
+      console.log(result, error)
+      return result
+    })
     console.timeEnd('cloudinary')
 
     console.time('MogodbSave')
