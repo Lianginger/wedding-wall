@@ -20,6 +20,7 @@
     "imagemin-jpegtran": "^6.0.0",
     "imagemin-pngquant": "^8.0.0",
     "mongoose": "^5.7.7",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "sharp": "^0.23.2"
   }
 }
