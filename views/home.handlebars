@@ -15,13 +15,13 @@
     {{#each cards}}
     <div class="">
       <div class="card" style="box-shadow: 0 4px 8px 0 rgba(200,35,51,0.2);">
-        <img src="https://res.cloudinary.com/gingerhouse/image/upload/q_auto/w_360/{{this.imageId}}" alt="{{this.name}}"
+        <img src="https://res.cloudinary.com/gingerhouse/image/upload/{{this.imageId}}" alt="{{this.name}}"
           style="width:100%">
         <div class="card-text p-3">
           <p>{{this.text}}</p>
           <div class="info" style="text-align: right">
             <div class="avatar"
-              style="display: inline-block; width: 2em;height: 2em;background-image: url(https://res.cloudinary.com/gingerhouse/image/upload/g_face,c_thumb,w_32,h_32,r_max/{{this.profilePicId}});background-position: center ;background-repeat: no-repeat ;background-size: cover; border-radius: 50%; margin-bottom: -0.5em;">
+              style="display: inline-block; width: 2em;height: 2em;background-image: url(https://res.cloudinary.com/gingerhouse/image/upload/{{this.imageId}});background-position: center ;background-repeat: no-repeat ;background-size: cover; border-radius: 50%; margin-bottom: -0.5em;">
             </div>
             <p style="display: inline-block; padding-left: 0.5em">{{this.name}}</p>
           </div>
