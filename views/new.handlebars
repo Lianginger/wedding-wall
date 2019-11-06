@@ -19,8 +19,10 @@
         </div>
         <div class="form-group">
           <label for="image">請選擇一張照片<span class="text-danger">*</span>：</label>
-          <img src="" id="image-preview" class="mb-3 d-none" style="width:300px">
-          <p class="d-none" id="image-size"></p>
+          <div class="d-none text-center" id="image-preview">
+            <canvas></canvas>
+            <p class="d-none" id="image-size"></p>
+          </div>
           <input type="file" class="form-control-file" id="image" name="image" accept="image/*" required>
         </div>
         <button type="submit" class="btn btn-danger w-100" id="upload-button">❤ 上傳 ❤</button>
@@ -45,11 +47,27 @@
   document.getElementById('image').addEventListener('change', e => {
     const files = e.target.files
     const imageURL = window.URL.createObjectURL(files[0])
+    console.log(files[0])
 
-    document.getElementById('image-size').innerHTML = `${files[0].size / 1024 / 1024} MB`
+    const imageSize = files[0].size / 1024 / 1024
+    document.getElementById('image-size').innerHTML = `檔案大小 ${imageSize.toFixed(2)} MB`
     document.getElementById('image-size').classList.add('d-block')
-    document.getElementById('image-preview').src = imageURL
-    document.getElementById('image-preview').classList.add('d-block')
+
+    //document.getElementById('image-preview').src = imageURL
+    document.getElementById('image-preview').classList.remove('d-none')
+    loadImage(
+      e.target.files[0],
+      function (img) {
+        const olderElement = document.querySelector('canvas')
+        console.log(olderElement, img)
+        olderElement.parentNode.replaceChild(img, olderElement)
+      },
+      {
+        maxWidth: 300,
+        maxHeight: 300,
+        orientation: true
+      }
+    )
   })
 
   function checkSize() {

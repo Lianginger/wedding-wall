@@ -1,6 +1,6 @@
 # Wedding Wall 婚禮祝福牆
 
-為了哥哥 11 及 12 月份的訂婚、結婚，結合 Messenger 聊天機器人，打造一個與來賓互動的及時婚禮祝福牆。
+為了哥哥 11 及 12 月份的訂婚、結婚，結合 Messenger 聊天機器人，打造一個與來賓互動的即時婚禮祝福牆。
 
 Images are resized and compress with sharp
 
@@ -9,3 +9,5 @@ Images are resized and compress with sharp
 - 1920 x 1080
 - 1280 x 768
 - 800 x 600
+
+Handle image rotation on mobile

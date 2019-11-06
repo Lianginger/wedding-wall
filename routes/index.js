@@ -62,11 +62,13 @@ module.exports = app => {
     console.time('croppedImage-sharp')
     const image = sharp(req.file.buffer)
     let imageMetadata = await image.metadata()
+    console.log(imageMetadata)
     let croppedImage = req.file.buffer
     let isResize = 0
     if (imageMetadata.height > 768) {
       isResize++
       croppedImage = await image
+        .rotate()
         .resize({ height: 768 })
         .toFormat('jpeg')
         .toBuffer()
@@ -75,6 +77,7 @@ module.exports = app => {
     if (imageMetadata.width > 1280) {
       isResize++
       croppedImage = await sharp(croppedImage)
+        .rotate()
         .resize({ width: 1280 })
         .toFormat('jpeg')
         .toBuffer()
