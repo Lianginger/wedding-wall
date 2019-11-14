@@ -120,7 +120,7 @@ module.exports = app => {
     res.redirect('/')
   })
 
-  app.post('/', async (req, res) => {
+  app.post('/from-chatfuel', async (req, res) => {
     console.log(req.body)
     const newCard = new Card({
       name: req.body.name,
