@@ -5,9 +5,8 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 const cloudinary = require('cloudinary').v2
 const Datauri = require('datauri')
-const imagemin = require('imagemin')
-const imageminJpegtran = require('imagemin-jpegtran')
-const imageminPngquant = require('imagemin-pngquant')
+const { Storage } = require('@google-cloud/storage')
+const storage = new Storage()
 const sharp = require('sharp')
 
 cloudinary.config({
