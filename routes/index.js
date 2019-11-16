@@ -6,7 +6,10 @@ const upload = multer({ storage: storage })
 const cloudinary = require('cloudinary').v2
 const Datauri = require('datauri')
 const { Storage } = require('@google-cloud/storage')
-const storage = new Storage()
+const gcpstorage = new Storage({
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
+})
+const bucket = gcpstorage.bucket('gcp-wedding-wall')
 const sharp = require('sharp')
 
 cloudinary.config({
@@ -14,6 +17,29 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
+
+function imgUploadGCS(file) {
+  return new Promise((resolve, reject) => {
+    const gcsname = Date.now()
+    const stream = bucket.file(gcsname).createWriteStream({
+      metadata: {
+        contentType: 'image/jpeg'
+      },
+      resumable: false
+    })
+
+    stream.on('error', err => {
+      reject(err)
+    })
+
+    stream.on('finish', () => {
+      console.log(gcsname)
+      resolve(gcsname)
+    })
+
+    stream.end(file)
+  })
+}
 
 module.exports = app => {
   app.get('/', async (req, res) => {
@@ -92,6 +118,10 @@ module.exports = app => {
     const croppedImageMetadata = await sharp(croppedImage).metadata()
     console.log('調整後圖片大小', croppedImageMetadata.size)
     console.log('壓縮率', ((req.file.size - croppedImageMetadata.size) * 100) / req.file.size, '%')
+
+    console.time('gcp-upload')
+    await imgUploadGCS(croppedImage)
+    console.timeEnd('gcp-upload')
 
     console.time('datauri')
     const datauri = new Datauri()
