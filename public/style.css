@@ -33,6 +33,6 @@ h6 {
   color: white;
 }
 
-.card-text {
-  font-family: 'Noto Sans TC';
+.card {
+  border: 0px;
 }
