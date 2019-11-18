@@ -18,3 +18,17 @@
 瀏覽器不會偵測照片檔案的方向，因此手機拍完照片上傳後，在前端圖片顯示及後端照片上傳時會發生錯誤的旋轉。
 前端：blueimp-load-image
 後端：sharp 設定 rotate()
+
+### Cloudinary VS Google Cloud Storage(GCS)
+
+專案一開始是將圖片上傳到 Cloudinary 這個雲端圖像處理平台，透過調整網址參數就可以即時優化圖片，但考量到本專案並不需要大量的即時圖片調整，在和 GCS 比較過後，GCS 在上傳和載入速度上都快了近 3 倍，因此最後將圖片儲存換成 GCS。
+
+在本地端環境，比較上傳一張經過裁切和壓縮後檔案大小約 60 K 的圖片：
+
+- Cloudinary 約 1500 ms
+- Google Cloud Storage 約 500 ms
+
+比較加載圖片時間：
+
+- Cloudinary 約 750 ms
+- Google Cloud Storage 約 250 ms
