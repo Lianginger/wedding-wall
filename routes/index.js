@@ -123,19 +123,6 @@ module.exports = app => {
     await imgUploadGCS(croppedImage)
     console.timeEnd('gcp-upload')
 
-    console.time('datauri')
-    const datauri = new Datauri()
-    await datauri.format(path.extname(req.file.originalname).toString(), croppedImage)
-    console.timeEnd('datauri')
-    const file = datauri.content
-
-    console.time('cloudinary')
-    const result = await cloudinary.uploader.upload(file, function(error, result) {
-      console.log(result, error)
-      return result
-    })
-    console.timeEnd('cloudinary')
-
     console.time('MogodbSave')
     const newCard = new Card({
       name: req.body.name,
