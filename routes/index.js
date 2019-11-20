@@ -1,22 +1,13 @@
-const path = require('path')
 const Card = require('../models/card')
 const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
-const cloudinary = require('cloudinary').v2
-const Datauri = require('datauri')
 const { Storage } = require('@google-cloud/storage')
 const gcpstorage = new Storage({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
 })
 const bucket = gcpstorage.bucket('gcp-wedding-wall')
 const sharp = require('sharp')
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-})
 
 function imgUploadGCS(file) {
   return new Promise((resolve, reject) => {
