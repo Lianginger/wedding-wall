@@ -1,36 +1,12 @@
 const Card = require('../models/card')
-const multer = require('multer')
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
+const images = require('../lib/images')
+
 const { Storage } = require('@google-cloud/storage')
 const gcpstorage = new Storage({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
 })
 const bucket = gcpstorage.bucket('gcp-wedding-wall')
 const sharp = require('sharp')
-
-function imgUploadGCS(file) {
-  return new Promise((resolve, reject) => {
-    const gcsname = Date.now()
-    const stream = bucket.file(gcsname).createWriteStream({
-      metadata: {
-        contentType: 'image/jpeg'
-      },
-      resumable: false
-    })
-
-    stream.on('error', err => {
-      reject(err)
-    })
-
-    stream.on('finish', () => {
-      console.log(gcsname)
-      resolve(gcsname)
-    })
-
-    stream.end(file)
-  })
-}
 
 module.exports = app => {
   app.get('/', async (req, res) => {
@@ -53,7 +29,7 @@ module.exports = app => {
     res.render('new')
   })
 
-  app.post('/cards/new', upload.single('image'), async (req, res) => {
+  app.post('/cards/new', images.multer.single('image'), async (req, res) => {
     if (!req.file || !req.body.name || !req.body.text) {
       const errorMessage = {
         status: 'error',
@@ -74,70 +50,19 @@ module.exports = app => {
       res.render('new', { errorMessage })
     }
 
-    // 尺寸大於 1280x768 調整尺寸大小
-    console.time('croppedImage-sharp')
-    const image = sharp(req.file.buffer)
-    let imageMetadata = await image.metadata()
-    console.log(imageMetadata)
-    let croppedImage = req.file.buffer
-    let isResize = 0
-    if (imageMetadata.height > 768) {
-      isResize++
-      croppedImage = await image
-        .rotate()
-        .resize({ height: 768 })
-        .toFormat('jpeg')
-        .toBuffer()
-    }
-    imageMetadata = await sharp(croppedImage).metadata()
-    if (imageMetadata.width > 1280) {
-      isResize++
-      croppedImage = await sharp(croppedImage)
-        .rotate()
-        .resize({ width: 1280 })
-        .toFormat('jpeg')
-        .toBuffer()
-    }
-    if (isResize === 0) {
-      croppedImage = await image.toFormat('jpeg').toBuffer()
-    }
-    console.timeEnd('croppedImage-sharp')
+    // 調整尺寸大小，寬、高小於 1280x768，最後壓縮成 JPG 檔
+    const processedImageBuffer = await images.cropAndCompress(req.file, 1280, 768)
+    const uploadedFileId = await images.uploadToGCS(processedImageBuffer)
 
-    // 調整大小前後差多少
-    console.log('isResize', isResize)
-    console.log('原始圖片大小', req.file.size)
-    const croppedImageMetadata = await sharp(croppedImage).metadata()
-    console.log('調整後圖片大小', croppedImageMetadata.size)
-    console.log('壓縮率', ((req.file.size - croppedImageMetadata.size) * 100) / req.file.size, '%')
-
-    console.time('gcp-upload')
-    await imgUploadGCS(croppedImage)
-    console.timeEnd('gcp-upload')
-
-    console.time('MogodbSave')
+    console.time('MongoDBSaveTime')
     const newCard = new Card({
       name: req.body.name,
-      imageId: result.public_id,
-      text: req.body.text,
-      profilePicId: result.public_id
+      imageId: uploadedFileId,
+      text: req.body.text
     })
     await newCard.save()
-    console.timeEnd('MogodbSave')
+    console.timeEnd('MongoDBSaveTime')
 
     res.redirect('/')
-  })
-
-  app.post('/from-chatfuel', async (req, res) => {
-    console.log(req.body)
-    const newCard = new Card({
-      name: req.body.name,
-      imageId: req.body.imageId,
-      text: req.body.text,
-      profilePicId: req.body.profilePicId
-    })
-    await newCard.save()
-    res.json({
-      status: 'ok'
-    })
   })
 }
