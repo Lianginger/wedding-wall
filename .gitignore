@@ -1,3 +1,4 @@
 node_modules
 .env
 866936c9a101.json
+./google-credentials-heroku.json
