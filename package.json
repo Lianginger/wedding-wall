@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "preinstall": "node preinstall.js",
+    "heroku-prebuild": "node preinstall.js && cat google-credentials-heroku.json",
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
