@@ -1,8 +1,8 @@
 const express = require('express')
 const exphbs = require('express-handlebars')
-const app = express()
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const app = express()
 const port = process.env.PORT || 3000
 
 if (process.env.NODE_ENV !== 'production') {

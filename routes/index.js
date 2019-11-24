@@ -1,19 +1,19 @@
 const Card = require('../models/card')
 const images = require('../lib/images')
 
-const { Storage } = require('@google-cloud/storage')
-const gcpstorage = new Storage({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
-})
-const bucket = gcpstorage.bucket('gcp-wedding-wall')
-const sharp = require('sharp')
-
 module.exports = app => {
   app.get('/', async (req, res) => {
     const cards = await Card.find({})
       .sort({ _id: -1 })
       .exec()
     res.render('home', { cards })
+  })
+
+  app.get('/home-admin', async (req, res) => {
+    const cards = await Card.find({})
+      .sort({ _id: -1 })
+      .exec()
+    res.render('home-admin', { cards })
   })
 
   app.get('/favicon.ico', (req, res) => res.status(204))
@@ -27,6 +27,11 @@ module.exports = app => {
 
   app.get('/cards/new', (req, res) => {
     res.render('new')
+  })
+
+  app.post('/card', async (req, res) => {
+    await Card.findOneAndDelete({ _id: req.body.cardId })
+    res.redirect('/home-admin')
   })
 
   app.post('/cards/new', images.multer.single('image'), async (req, res) => {
