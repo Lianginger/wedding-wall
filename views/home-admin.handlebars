@@ -6,7 +6,7 @@
   </div>
   <div class="card-columns">
     {{#each cards}}
-    <form method="post" action="/card?__method=delete">
+    <form method="post" action="/card-delete?__method=delete">
       <div class="card" style="box-shadow: 0 4px 8px 0 rgba(200,35,51,0.2);">
         <img src="https://storage.googleapis.com/gcp-wedding-wall/{{this.imageId}}" alt="{{this.name}}"
           style="width:100%">

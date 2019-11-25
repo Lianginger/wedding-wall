@@ -29,7 +29,7 @@ module.exports = app => {
     res.render('new')
   })
 
-  app.post('/card', async (req, res) => {
+  app.post('/card-delete', async (req, res) => {
     await Card.findOneAndDelete({ _id: req.body.cardId })
     res.redirect('/home-admin')
   })
