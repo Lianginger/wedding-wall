@@ -9,11 +9,11 @@ module.exports = app => {
     res.render('home', { cards })
   })
 
-  app.get('/home-admin', async (req, res) => {
+  app.get('/admin', async (req, res) => {
     const cards = await Card.find({})
       .sort({ _id: -1 })
       .exec()
-    res.render('home-admin', { cards })
+    res.render('admin', { cards })
   })
 
   app.get('/favicon.ico', (req, res) => res.status(204))
