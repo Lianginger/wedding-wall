@@ -31,7 +31,7 @@ module.exports = app => {
 
   app.post('/card-delete', async (req, res) => {
     await Card.findOneAndDelete({ _id: req.body.cardId })
-    res.redirect('/home-admin')
+    res.redirect('/admin')
   })
 
   app.post('/cards/new', images.multer.single('image'), async (req, res) => {
