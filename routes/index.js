@@ -45,12 +45,12 @@ module.exports = app => {
     }
 
     // 檢查檔案大小
-    const max_img_size = 4 * 1024 * 1024
+    const max_img_size = 8 * 1024 * 1024
     if (req.file.size > max_img_size) {
       const errorMessage = {
         status: 'error',
         title: '喔！圖片太大了',
-        text: '圖片大小必須小於 4 MB，請重新選擇一張照片。'
+        text: '圖片大小必須小於 8 MB，請重新選擇一張照片。'
       }
       res.render('new', { errorMessage })
     }
