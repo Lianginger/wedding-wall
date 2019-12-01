@@ -36,3 +36,9 @@ h6 {
 .card {
   border: 0px;
 }
+
+@media screen and (min-width: 800px) {
+  .carousel-caption p {
+    font-size: 2em;
+  }
+}
